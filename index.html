@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Thread - Digital Etiquette 2025</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500&family=Noto+Sans+JP:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+        /* --- Reset & Base --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #fcfcfc;
+            color: #111;
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        /* --- SVG Background --- */
+        .svg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        svg {
+            height: 90vh;
+            width: auto;
+            max-width: 100%;
+            /* 影を濃くして、糸の重なりを強調 */
+            filter: drop-shadow(1px 2px 4px rgba(0,0,0,0.2));
+        }
+
+        path {
+            fill: none;
+            stroke: #222;
+            /* 【修正】太さを最初から「2.5px」で一定にする */
+            stroke-width: 2.5; 
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* --- Content Layout --- */
+        .scroll-spacer {
+            height: 900vh; /* 少し長くして、絡まりをじっくり見せる */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .content-wrapper {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            opacity: 0;
+            padding: 2rem;
+            width: 90%;
+            max-width: 560px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(8px);
+            border-radius: 8px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: 0.05em;
+        }
+
+        p {
+            font-size: 1.05rem;
+            line-height: 2;
+            color: #444;
+            font-weight: 500;
+        }
+
+        .alert-text { color: #d00000; font-weight: 700; }
+        .hope-text { color: #00509d; font-weight: 700; }
+
+        /* --- Chaos Words (Words scattered around the knot) --- */
+        .chaos-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .chaos-word {
+            position: absolute;
+            font-size: 1.1rem;
+            color: #d00000;
+            font-weight: 700;
+            white-space: nowrap;
+            opacity: 0;
+            text-shadow: 0 0 10px rgba(255,255,255,0.8);
+        }
+
+        /* 言葉の配置位置を調整（絡まりの周りに） */
+        .w1 { top: 15%; left: 10%; transform: rotate(-15deg); }
+        .w2 { top: 20%; right: 12%; transform: rotate(10deg); }
+        .w3 { bottom: 25%; left: 8%; transform: rotate(20deg); }
+        .w4 { bottom: 18%; right: 15%; transform: rotate(-10deg); }
+        .w5 { top: 10%; right: 35%; font-size: 0.9rem; transform: rotate(5deg); }
+        
+        /* Scroll Hint */
+        .scroll-hint {
+            position: fixed;
+            bottom: 30px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #888;
+            letter-spacing: 0.2em;
+            animation: flicker 3s infinite alternate;
+            z-index: 20;
+        }
+        @keyframes flicker { 0%{opacity:0.3} 100%{opacity:1} }
+
+    </style>
+</head>
+<body>
+
+    <div class="svg-container">
+        <svg id="main-svg" viewBox="0 0 100 800" preserveAspectRatio="xMidYMid meet">
+            <path id="the-path" d="" />
+        </svg>
+    </div>
+
+    <div class="content-wrapper" id="text-intro">
+        <h2>Connection</h2>
+        <p>デジタル空間には、<br>見えない糸が張り巡らされている。<br>SNS、DM、コメント──<br>私たちは糸で繋がり、支え合っている。</p>
+    </div>
+
+    <div class="content-wrapper" id="text-chaos">
+        <h2 class="alert-text">Distortion</h2>
+        <p>でも、無責任な言葉は糸を<span class="alert-text">絡ませる</span>。<br>画面越しの「誰か」を忘れた瞬間、<br>糸は誰かを締め付ける凶器に変わる。</p>
+    </div>
+    
+    <div class="chaos-container">
+        <span class="chaos-word w1">誹謗中傷</span>
+        <span class="chaos-word w2">無断転載</span>
+        <span class="chaos-word w3">晒し行為</span>
+        <span class="chaos-word w4">炎上</span>
+        <span class="chaos-word w5">デジタルタトゥー</span>
+    </div>
+
+    <div class="content-wrapper" id="text-resolve">
+        <h2 class="hope-text">Untangle</h2>
+        <p>糸をほどく鍵は、相手を思いやること。<br>投稿する前に、一時停止。<br>この糸の先には、誰かの心がある。<br>その人の未来を、あなたは守れる。</p>
+    </div>
+
+    <div class="content-wrapper" id="text-final">
+        <h2>Our Place, Our Etiquette</h2>
+        <p>私たちが紡ぐのは、絡まりではなく、<br>美しいつながり。<br>デジタル社会は自由だ──<br>その自由を、思いやりで守ろう！</p>
+    </div>
+
+    <div class="scroll-spacer"></div>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // --- 1. SVGパスデータ定義 ---
+        // 赤い糸くず（画像2）のような「ぐちゃぐちゃ」を再現するために、
+        // 制御点をランダムに近い形で交差させ、狭いエリアを行き来させる。
+
+        // Part 1: 直線 (導入)
+        const part1 = "M 50 0 L 50 150";
+        
+        // Part 2: カオス (ぐちゃぐちゃの毛玉) 
+        // 座標を上下させ、ループを作りまくる
+        const part2 = `
+            C 50 200, 20 250, 80 220 
+            C 100 200, 0 200, 60 250 
+            C 80 280, 20 180, 30 300 
+            C 40 400, 90 250, 10 320 
+            C -20 350, 120 350, 50 300 
+            C 20 280, 80 400, 40 450 
+            C 0 500, 100 450, 50 400 
+            C 10 380, 90 520, 60 480 
+            C 30 450, 70 550, 50 580
+        `;
+        // 解説: C (制御点1x 1y, 制御点2x 2y, 終点x 終点y)
+        // 終点のY座標(最後の数値)が行ったり来たりしている点に注目してください。これが「絡まり」を作ります。
+
+        // Part 3: 解ける
+        const part3 = `
+            C 30 620, 70 650, 50 680
+            C 40 700, 60 720, 50 750
+        `;
+
+        // Part 4: 円環
+        const part4 = `
+            C 20 780, 20 840, 50 840
+        `;
+
+        const pathEl = document.querySelector("#the-path");
+        pathEl.setAttribute("d", part1 + part2 + part3 + part4);
+
+        // --- 2. 描画アニメーション ---
+        const length = pathEl.getTotalLength();
+        pathEl.style.strokeDasharray = length;
+        pathEl.style.strokeDashoffset = length;
+
+        gsap.to(pathEl, {
+            strokeDashoffset: 0,
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".scroll-spacer",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1, // 追従
+            }
+        });
+
+        // --- 3. 色の変化のみ（太さは変えない） ---
+        
+        // 赤く染まる（カオス）
+        gsap.to(pathEl, {
+            stroke: "#d00000",
+            scrollTrigger: {
+                trigger: ".scroll-spacer",
+                start: "15% top", 
+                end: "55% top",
+                scrub: true
+            }
+        });
+
+        // 青く戻る（解決）
+        gsap.to(pathEl, {
+            stroke: "#00509d",
+            scrollTrigger: {
+                trigger: ".scroll-spacer",
+                start: "60% top",
+                end: "80% top",
+                scrub: true
+            }
+        });
+
+        // 黒に戻る（完了）
+        gsap.to(pathEl, {
+            stroke: "#111",
+            scrollTrigger: {
+                trigger: ".scroll-spacer",
+                start: "85% top",
+                end: "100% bottom",
+                scrub: true
+            }
+        });
+
+
+        // --- 4. テキスト & カオスワードの制御 ---
+        // シーン位置定義
+        const positions = [
+            { id: "#text-intro",   start: 0.0, end: 0.12 },
+            { id: "#text-chaos",   start: 0.20, end: 0.50 },
+            { id: "#text-resolve", start: 0.60, end: 0.75 },
+            { id: "#text-final",   start: 0.8, end: 0.85 }
+        ];
+
+        positions.forEach((p, i) => {
+            // 表示
+            gsap.to(p.id, {
+                opacity: 1,
+                scale: 1,
+                duration: 0.5,
+                scrollTrigger: {
+                    trigger: ".scroll-spacer",
+                    start: `${p.start * 100}% top`,
+                    end: `${p.end * 100}% top`,
+                    toggleActions: "play reverse play reverse",
+                }
+            });
+
+            // 非表示（最後以外）
+            if (i < positions.length - 1) {
+                gsap.to(p.id, {
+                    opacity: 0,
+                    scale: 0.9,
+                    duration: 0.5,
+                    scrollTrigger: {
+                        trigger: ".scroll-spacer",
+                        start: `${p.end * 100}% top`,
+                        toggleActions: "play none none reverse",
+                    }
+                });
+            }
+        });
+
+        // カオスワード（言葉のナイフ等）の出現アニメーション
+        gsap.to(".chaos-word", {
+            opacity: 1,
+            scale: 1.2,
+            duration: 0.5,
+            stagger: {
+                amount: 1,
+                from: "random"
+            },
+            ease: "elastic.out(1, 0.3)", // 弾むように出てくる
+            scrollTrigger: {
+                trigger: ".scroll-spacer",
+                start: "20% top",
+                end: "50% top",
+                toggleActions: "play reverse play reverse",
+            }
+        });
+
+    </script>
+</body>
+</html>
